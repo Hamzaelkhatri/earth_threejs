@@ -42,20 +42,43 @@
         const z = radius * Math.cos(theta);
         earth.position.set(x, y, z);
         scene.add(earth);
-        camera.position.z = 5;
+
+        // create a lot of planets
+        const geometry2 = new THREE.SphereGeometry(1, 32, 32);
+        const texture2 = new THREE.TextureLoader().load('./img/universe.jpg');
+        const material2 = new THREE.MeshBasicMaterial({ map: texture2 });
+        const mercury = new THREE.Mesh(geometry2, material2);
+        mercury.position.set(10, 0, 0);
+        scene.add(mercury);
+       
+        camera.position.z = 15;
         var zoom = 1;
         function animate() {
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
-            // earth.rotation.x += 0.01;
+
+            //make the mercury rotate around the earth
+            mercury.rotation.y += 0.01;
+            mercury.position.x = 10 * Math.cos(mercury.rotation.y);
+            mercury.position.z = 10 * Math.sin(mercury.rotation.y);
+
+            // mercury.rotation.y += 0.01;
             earth.rotation.y += 0.01;
-            earth.position.z += 0.01 * zoom;
-            console.log(earth.position.z);
-            if(earth.position.z > 3.5 || earth.position.z < -3.5){
-                // earth.position.z = -4;
-                zoom = -zoom;
-            }
+            // camera.rotation.y += 0.01;
         }
+
+        // add event listener zoom in and zoom out
+        document.addEventListener('mousewheel', onMouseWheel, false);
+        function onMouseWheel(event) {
+            if (event.wheelDelta > 0) {
+                zoom += 0.1;
+            } else {
+                zoom -= 0.1;
+            }
+            earth.position.z = zoom;
+            mercury.position.z = zoom;
+        }
+        // document.addEventListener('mousemove', onDocumentMouseMove, false);
         animate();
 
     </script>
