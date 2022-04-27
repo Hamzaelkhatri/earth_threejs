@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="js/three.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        // const geometry = new THREE.BoxGeometry();
+        // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        // const cube = new THREE.Mesh(geometry, material);
+        // scene.add(cube);
+
+        //create a earth
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        // add texture to the earth
+        const texture = new THREE.TextureLoader().load('./img/earth.jpg');
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const earth = new THREE.Mesh(geometry, material);
+        // add raytracing
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const radius = 1;
+        const theta = 0;
+        const phi = 0;
+        const x = radius * Math.sin(theta) * Math.cos(phi);
+        const y = radius * Math.sin(theta) * Math.sin(phi);
+        const z = radius * Math.cos(theta);
+        earth.position.set(x, y, z);
+        scene.add(earth);
+        camera.position.z = 5;
+        var zoom = 1;
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+            // earth.rotation.x += 0.01;
+            earth.rotation.y += 0.01;
+            earth.position.z += 0.01 * zoom;
+            console.log(earth.position.z);
+            if(earth.position.z > 3.5 || earth.position.z < -3.5){
+                // earth.position.z = -4;
+                zoom = -zoom;
+            }
+        }
+        animate();
+
+    </script>
+</body>
+
+</html>
